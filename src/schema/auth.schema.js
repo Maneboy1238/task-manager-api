@@ -1,6 +1,8 @@
 const z = require("zod");
 
 const signupSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
   username: z.string(),
   email: z.email(),
   password: z.string(),

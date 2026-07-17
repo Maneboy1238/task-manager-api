@@ -1,5 +1,4 @@
 class AppError extends Error {
-  statusCode;
   constructor(error) {
     super(error.message);
     this.statusCode = error.statusCode;
@@ -7,8 +6,9 @@ class AppError extends Error {
 }
 function handleErrors(res, error) {
   const statusCode = error.statusCode || 500;
-  res.status(statusCode).send({ message: error.messsage });
   console.log(error.message);
+  res.status(statusCode).send({ message: error.message });
+  
 }
 module.exports = {
   AppError,
