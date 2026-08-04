@@ -1,14 +1,19 @@
 const express = require("express");
-const authRouter = require("./routes/auth.route");
+const routes = require("./routes/index");
+const connectDb = require("./config/dbConnect");
 const app = express();
+
 app.use(express.json());
-const PORT = process.env.PORT || 3000;
-app.use(authRouter);
+app.use(routes);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the home page");
 });
 
-app.listen(PORT, () => {
-  console.log(`server running on ${PORT}`);
-});
+const PORT = process.env.PORT || 3000;
+(async () => {
+  await connectDb();
+  app.listen(PORT, () => {
+    console.log(`server running on ${PORT}`);
+  });
+})();

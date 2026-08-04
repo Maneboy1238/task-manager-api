@@ -17,7 +17,7 @@ async function getUserById(id) {
 async function createUser(user) {
     const users = await getUsersFromJSONFile();
 
-    if (await userExists(users, user.id)) {
+    if (await userExists(user.id)) {
         throw new AppError({message: 'conflict. User already exists', statusCode: 409})
     }
     users.push(user);
@@ -28,7 +28,7 @@ async function createUser(user) {
 async function updateUserById(user) {
     let users = await getUsersFromJSONFile();
 
-    if ( !(await userExists(users,user.id)) ) {
+    if ( !(await userExists(user.id)) ) {
         throw new AppError({message: 'user not foumd', statusCode: 404});
     }
     users = users.map(userData => {
@@ -49,7 +49,7 @@ async function updateUserById(user) {
 async function deleteUserById(id) {
     let users = await getUsersFromJSONFile();
 
-    if ( !(await userExists(users, id)) ) {
+    if ( !(await userExists(id)) ) {
         throw new AppError({message: 'user not found', statusCode: 404});
     }
 
@@ -68,7 +68,8 @@ async function getUsersFromJSONFile() {
 async function writeToUsersJSONFile(data) {
     await fs.writeFile(usersJSONFilePath, JSON.stringify(data), null, 2)
 }
-async function userExists(users, id) {
+async function userExists(id) {
+    const users = await getUsersFromJSONFile();
     return users.find( user => user?.id === id);
 }
 // Run tests on the model functions
@@ -85,3 +86,11 @@ async function test() {
 }
 test()
 */
+module.exports = {
+    getUsers,
+    getUserById,
+    createUser,
+    updateUserById,
+    deleteUserById,
+    userExists
+}

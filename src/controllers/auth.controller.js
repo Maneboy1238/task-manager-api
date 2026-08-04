@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const crypto = require('crypto');
 const { handleErrors } = require('../utils/helpers');
 const users = require('../utils/constants')
+const { createUser, userExists } = require("../models/user.model")
 
 const checkPassword = async (password) => {
     const userPasswordIsCorrect = await bcrypt.compare(password.sent, password.hash);
@@ -22,7 +23,7 @@ try {
             email: body.email,
             password: hashedPassword,
         };
-        users.push(user);
+        await createUser(user);
         const {password , ...userInfo} = user
         const token  = jwt.sign(userInfo, process.env.MY_SECRET, {
             expiresIn: "10m"
@@ -41,7 +42,7 @@ try {
 async function loginUsersHandler(req, res) {
     try {
     const { body } = req;
-    const user = users.find((user) => user.username === body.username);
+    const user = await userExists(body.id)
     if (user) {
         await checkPassword({ sent: body.password, hash: user.password});
         const {password, ...userInfo} = user
