@@ -4,7 +4,7 @@ const connectDb = require("./config/dbConnect");
 const app = express();
 
 app.use(express.json());
-app.use(routes);
+app.use("/api/v1",routes);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the home page");

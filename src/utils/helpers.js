@@ -6,7 +6,7 @@ class AppError extends Error {
 }
 function handleErrors(res, error) {
   const statusCode = error.statusCode || 500;
-  console.log(error.message);
+  console.error(error);
   res.status(statusCode).send({ message: error.message });
   
 }
