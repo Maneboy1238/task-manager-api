@@ -9,7 +9,10 @@ app.use("/api/v1",routes);
 app.get("/", (req, res) => {
   res.send("Welcome to the home page");
 });
-
+app.use((err, req, res, next) => {
+  console.log(err)
+  res.status(err.statusCode || 500).json({message: err.message})
+})
 const PORT = process.env.PORT || 3000;
 (async () => {
   await connectDb();

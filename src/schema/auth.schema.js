@@ -31,6 +31,18 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  emailToken: {
+    type: Date,
+    default: null,
+  },
+  emailExpiresIn: {
+    type: String,
+    default: null,
   }
 })
 const User = mongoose.model("User", userSchema);
