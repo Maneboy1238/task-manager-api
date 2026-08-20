@@ -1,5 +1,6 @@
+const jwt = require("jsonwebtoken")
 const isUserFieldValid = require("../validators/auth.validator");
-function authMiddleware(schema) {
+function authValidationMiddleware(schema) {
   return (req , res, next) => {
   if (
     isUserFieldValid(schema, req.body)
@@ -10,4 +11,19 @@ function authMiddleware(schema) {
   }
 }
 }
-module.exports = authMiddleware;
+function JWTVerificationMiddleware(req, res, next) {
+  try {
+  const accessToken = req.cookies.accessToken;
+  const user = jwt.verify(accessToken, process.env.MY_SECRET);
+  req.uid = user.uid;
+  next()
+  } catch(error) {
+    console.log(error)
+    res.clearCookie("accessToken");
+    return res.sendStatus(401)
+  }
+}
+module.exports = {
+  authValidationMiddleware,
+  JWTVerificationMiddleware
+};

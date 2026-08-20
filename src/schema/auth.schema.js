@@ -37,11 +37,11 @@ const userSchema = new Schema({
     default: false,
   },
   emailToken: {
-    type: Date,
+    type: String,
     default: null,
   },
-  emailExpiresIn: {
-    type: String,
+  emailTokenExpiresIn: {
+    type: Date,
     default: null,
   }
 })

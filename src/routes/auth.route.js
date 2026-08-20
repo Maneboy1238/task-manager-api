@@ -1,13 +1,15 @@
 const express = require("express");
 const { signupSchema, loginSchema } = require("../schema/auth.schema");
-const authMiddleware = require("../middlewares/auth.middleware");
-const { signupUsersHandler, loginUsersHandler } = require("../controllers/auth.controller");
-const { handleErrors, AppError } = require("../utils/helpers");
+const { authValidationMiddleware, JWTVerificationMiddleware } = require("../middlewares/auth.middleware");
+const { signupUsersHandler, loginUsersHandler, sendVerificationEmailHandler } = require("../controllers/auth.controller");
+const { handleErrors, AppError } = require("../utils/error");
 
 const router = express.Router();
 
-router.post("/signup", authMiddleware(signupSchema), signupUsersHandler);
+router.post("/signup", authValidationMiddleware(signupSchema), signupUsersHandler);
 
-router.post("/login", authMiddleware(loginSchema), loginUsersHandler) 
+router.post("/login", authValidationMiddleware(loginSchema), loginUsersHandler) 
+
+router.post("/send-verification-email",JWTVerificationMiddleware, sendVerificationEmailHandler)
 
 module.exports = router;

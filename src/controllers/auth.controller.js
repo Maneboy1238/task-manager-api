@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const authService = require('../services/auth.service');
+const emailService = require("../services/email.service")
 
 async function signupUsersHandler(req, res) {
     const { body } = req;
@@ -15,6 +16,11 @@ async function loginUsersHandler(req, res) {
     res.status(200).json(user);
 }
 
+async function sendVerificationEmailHandler(req,res) {
+    const { uid } = req
+    const userEmail = await emailService.sendVerificationEmail(uid);
+    res.status(200).json({email:userEmail, message: "verification email has been sent to user email"})
+}
 function createAccessToken(res, userInfo) {
         const token  = jwt.sign(userInfo, process.env.MY_SECRET, {
             expiresIn: "10m"
@@ -27,5 +33,6 @@ function createAccessToken(res, userInfo) {
 }
 module.exports = {
     signupUsersHandler,
-    loginUsersHandler
+    loginUsersHandler,
+    sendVerificationEmailHandler
 }

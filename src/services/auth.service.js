@@ -1,6 +1,6 @@
-const bcrypt = require("bcrypt");
 const userModel = require("../models/user.model");
-const { AppError } = require("../utils/helpers");
+const { AppError } = require("../utils/error");
+const hash = require("../utils/hash");
 
 const authService = {
   async signup(body) {
@@ -10,11 +10,11 @@ const authService = {
         message: "Username already exists",
       });
     }
-    const hashedPassword = await createHash(body.password);
+    const hashedPassword = await hash.create(body.password);
     const user = await userModel.create({
       name: body.name,
       username: body.username,
-      email: false,
+      email: body.email,
       password: hashedPassword,
     });
     const { password, _v, ...userInfo } = user._doc;
@@ -24,7 +24,7 @@ const authService = {
   async login(body) {
         const user = await userModel.exists({username: body.username})
         if (!user) throw new AppError({statusCode: 404, message: "user not found"})
-        if (await checkPassword({ sent: body.password, hash: user.password})) throw new AppError({statusCode: 409, message: "incorrect passsword"});
+        if (!await hash.compare({ normal: body.password, hash: user.password})) throw new AppError({statusCode: 409, message: "incorrect passsword"});
         const {password, ...userInfo} = user._doc
         console.log(userInfo)
         return userInfo;
@@ -32,10 +32,5 @@ const authService = {
   }
 };
 
-async function createHash(password) {
-  return await bcrypt.hash(password, 10);
-}
-async  function checkPassword(password) {
-    return await bcrypt.compare(password.sent, password.hash)
-}
+
 module.exports = authService;
