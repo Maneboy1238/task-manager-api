@@ -1,5 +1,5 @@
 const express = require("express");
-const { signupSchema, loginSchema } = require("../schema/auth.schema");
+const { signupSchema, loginSchema } = require("../validators/auth.validator");
 const { authValidationMiddleware, JWTVerificationMiddleware } = require("../middlewares/auth.middleware");
 const { signupUsersHandler, loginUsersHandler, sendVerificationEmailHandler } = require("../controllers/auth.controller");
 const { handleErrors, AppError } = require("../utils/error");

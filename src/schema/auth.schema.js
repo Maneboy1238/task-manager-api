@@ -1,17 +1,5 @@
-const z = require("zod");
 const mongoose = require('mongoose');
-const { Schema } =mongoose;
-const signupSchema = z.object({
-  name: z.string(),
-  username: z.string(),
-  email: z.email(),
-  password: z.string(),
-});
-
-const loginSchema = z.object({
-  username: z.union([z.string(), z.email()]),
-  password: z.string(),
-});
+const { Schema } = mongoose;
 
 const userSchema = new Schema({
   name: {
@@ -47,8 +35,4 @@ const userSchema = new Schema({
 })
 const User = mongoose.model("User", userSchema);
 
-module.exports = {
-  signupSchema,
-  loginSchema,
-  User
-};
+module.exports = User;

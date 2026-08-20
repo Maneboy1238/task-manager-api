@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-const isUserFieldValid = require("../validators/auth.validator");
+const { isUserFieldValid } = require("../validators/auth.validator");
 function authValidationMiddleware(schema) {
   return (req , res, next) => {
   if (
