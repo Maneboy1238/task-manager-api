@@ -20,4 +20,9 @@ router.get("/verify-email", (req, res, next) => {
     }
 }, JWTVerificationMiddleware, verifyEmailHandler)
 
+route.get("/logout", JWTVerificationMiddleware, (req, res) => { 
+    res.clearCookie("accessToken");
+    return res.sendStatus(204)
+})
+
 module.exports = router;
