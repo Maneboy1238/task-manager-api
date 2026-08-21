@@ -4,7 +4,7 @@ const hash = require("../utils/hash");
 
 const authService = {
   async signup(body) {
-    if (await userModel.exists({ username: body.username })) {
+    if (await userModel.getByField({ username: body.username })) {
       throw new AppError({
         statusCode: 409,
         message: "Username already exists",
@@ -22,9 +22,9 @@ const authService = {
     return userInfo;
   },
   async login(body) {
-        const user = await userModel.exists({username: body.username})
+        const user = await userModel.getByField({username: body.username})
         if (!user) throw new AppError({statusCode: 404, message: "user not found"})
-        if (!await hash.compare({ normal: body.password, hash: user.password})) throw new AppError({statusCode: 409, message: "incorrect passsword"});
+        if (!await hash.compare({ normal: body.password, hash: user.password})) throw new AppError({statusCode: 401, message: "incorrect passsword"});
         const {password, ...userInfo} = user._doc
         console.log(userInfo)
         return userInfo;

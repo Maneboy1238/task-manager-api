@@ -4,16 +4,21 @@ const { Schema } = mongoose;
 const userSchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
+    lowercase: true,
   },
   username: {
     type: String,
     required: true,
+    lowercase: true,
+    trim: true,
     unique: true
   },
   email: {
     type: String,
     required: true,
+    lowercase: true,
+    trim: true,
     unique: true
   },
   password: {
@@ -28,7 +33,7 @@ const userSchema = new Schema({
     type: String,
     default: null,
   },
-  emailTokenExpiresIn: {
+  emailTokenExpiresAt: {
     type: Date,
     default: null,
   }

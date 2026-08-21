@@ -11,24 +11,24 @@ async getAll() {
     return user 
 },
 
-async get(id) {
+async getById(id) {
     const user = await User.findById(id);
     return user
 },
 
-async update(id, obj) {
+async updateById(id, obj) {
     const user = await User.findByIdAndUpdate(id, obj, {
         new: true,
     });
     return user
 },
 
-async  delete(id) {
+async  deleteById(id) {
     const user = await User.findByIdAndDelete(id);
     return true;
 },
 
-async  exists(obj) {
+async  getByField(obj) {
     return await User.findOne(obj)
 },
 }

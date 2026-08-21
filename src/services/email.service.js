@@ -9,10 +9,11 @@ const verificationEmailHTML = require("../emails/renderEmails");
 
 const emailService = {
   async sendVerificationEmail(uid) {
-    const user = await userModel.get(uid);
+    const user = await userModel.getById(uid);
     if (!user)
       throw new AppError({ statusCode: 404, message: "user not found" });
-    if (user.emailToken)
+    const isEmailTokenSent = user.emailToken && dayjs().isBefore(user.emailTokenExpiresAt)
+    if (isEmailTokenSent)
       throw new AppError({
         statusCode: 409,
         message: "A verification mail has been sent. Pls check your inbox",
@@ -23,20 +24,20 @@ const emailService = {
     const hashToken = await hash.create(token);
     const tokenExpiryDate = dayjs().add(10, "second").toDate();
     console.log(tokenExpiryDate);
-    userModel.update(uid, {
+    await userModel.updateById(uid, {
       emailToken: hashToken,
-      emailTokenExpiresIn: tokenExpiryDate,
+      emailTokenExpiresAt: tokenExpiryDate,
     });
 
     await sendMail(user.name, user.email);
     return user.email;
   },
   async verifyEmail(uid, token) {
-    const user = await userModel.get(uid);
+    const user = await userModel.getById(uid);
     if (!user) throw new AppError({ statusCode: 404, message: "user not found" });
-    if (dayjs().isAfter(user.emailTokenExpiresIn)) throw new AppError({statusCode: 410, message: "Token is expired"})
+    if (dayjs().isAfter(user.emailTokenExpiresAt)) throw new AppError({statusCode: 410, message: "Token is expired"})
     if (!hash.compare({normal: token, hash: user.emailToken})) throw new AppError({statusCode: 400, message: "Token is invalid"})
-    const update = await userModel.update(uid, { isEmailVerified: true, emailToken: null, emailTokenExpiresIn: null})
+    const update = await userModel.updateById(uid, { isEmailVerified: true, emailToken: null, emailTokenExpiresAt: null})
     console.log(update)
   }
 };
