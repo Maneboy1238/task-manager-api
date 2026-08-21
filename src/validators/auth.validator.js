@@ -12,6 +12,9 @@ const loginSchema = z.object({
   password: z.string(),
 });
 
+const verifyEmailSchema = z.object({
+  token: z.string(),
+})
 function isUserFieldValid(schema, user) {
   const result = schema.safeParse(user);
   return result.success;
@@ -19,5 +22,6 @@ function isUserFieldValid(schema, user) {
 module.exports = {
   signupSchema,
   loginSchema,
+  verifyEmailSchema,
   isUserFieldValid
 };

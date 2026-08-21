@@ -19,8 +19,9 @@ const emailService = {
       });
 
     const token = crypto.randomUUID();
+    console.log(token)
     const hashToken = await hash.create(token);
-    const tokenExpiryDate = dayjs().add(10, "minute").toDate();
+    const tokenExpiryDate = dayjs().add(10, "second").toDate();
     console.log(tokenExpiryDate);
     userModel.update(uid, {
       emailToken: hashToken,
@@ -30,6 +31,14 @@ const emailService = {
     await sendMail(user.name, user.email);
     return user.email;
   },
+  async verifyEmail(uid, token) {
+    const user = await userModel.get(uid);
+    if (!user) throw new AppError({ statusCode: 404, message: "user not found" });
+    if (dayjs().isAfter(user.emailTokenExpiresIn)) throw new AppError({statusCode: 410, message: "Token is expired"})
+    if (!hash.compare({normal: token, hash: user.emailToken})) throw new AppError({statusCode: 400, message: "Token is invalid"})
+    const update = await userModel.update(uid, { isEmailVerified: true, emailToken: null, emailTokenExpiresIn: null})
+    console.log(update)
+  }
 };
 
 const attachment = fs

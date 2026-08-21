@@ -21,6 +21,14 @@ async function sendVerificationEmailHandler(req,res) {
     const userEmail = await emailService.sendVerificationEmail(uid);
     res.status(200).json({email:userEmail, message: "verification email has been sent to user email"})
 }
+
+async function verifyEmailHandler(req, res) {
+    const { uid } = req
+    const { token } = req.query;
+    await emailService.verifyEmail(uid, token);
+    res.status(200).json({message: "Email has now been verified"})
+}
+
 function createAccessToken(res, userInfo) {
         const token  = jwt.sign(userInfo, process.env.MY_SECRET, {
             expiresIn: "10m"
@@ -34,5 +42,6 @@ function createAccessToken(res, userInfo) {
 module.exports = {
     signupUsersHandler,
     loginUsersHandler,
-    sendVerificationEmailHandler
+    sendVerificationEmailHandler,
+    verifyEmailHandler
 }

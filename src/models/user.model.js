@@ -1,5 +1,5 @@
 const { id } = require("zod/v4/locales");
-const { User } = require("../schema/auth.schema");
+const User = require("../schema/auth.schema");
 const userModel = {
     async create(userData) {
     const user = await User.create(userData)
